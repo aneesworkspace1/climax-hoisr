@@ -383,48 +383,20 @@ td, th {
   overflow: hidden;
 }
 
-/* Sticky Dark Mode Toggle - Enhanced Positioning */
-.dark-mode-toggle {
-  position: fixed;
-  z-index: 1001;
-  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-  color: #ecf0f1;
-  border: none;
-  border-radius: 25px;
-  width: 60px;
-  height: 32px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  box-shadow: 
-    0 4px 15px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  /* Smooth scroll compatibility */
-  will-change: transform;
-  backface-visibility: hidden;
-}
 
-/* Desktop positioning - sticky below logo */
+/* Desktop positioning - fixed in navbar */
 @media (min-width: 769px) {
   .dark-mode-toggle {
-    position: fixed;
-    top: 90px;
-    left: 20px;
-    /* Ensure it stays above other content */
-    z-index: 1002;
-    /* Enhanced shadow for better visibility during scroll */
+    position: static;
+    margin-left: 20px;
+    z-index: 1001;
     box-shadow: 
-      0 6px 20px rgba(0, 0, 0, 0.3),
-      0 2px 8px rgba(0, 0, 0, 0.15),
+      0 4px 15px rgba(0, 0, 0, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 }
 
-/* Mobile positioning - fixed in corner */
+/* Mobile positioning - fixed in top right corner */
 @media (max-width: 768px) {
   .dark-mode-toggle {
     position: fixed;
@@ -432,12 +404,16 @@ td, th {
     right: 20px;
     width: 50px;
     height: 26px;
-    z-index: 1003;
-    /* Ensure it's above mobile menu */
+    z-index: 1004;
+    /* Ensure it's above mobile menu and header */
     box-shadow: 
       0 4px 12px rgba(0, 0, 0, 0.4),
       0 2px 6px rgba(0, 0, 0, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    /* Ensure minimum touch target */
+    min-width: 44px;
+    min-height: 44px;
+    padding: 9px;
   }
 }
 
@@ -481,19 +457,7 @@ td, th {
   }
 }
 
-/* Enhanced sticky behavior styles */
-.dark-mode-toggle.scrolling {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.dark-mode-toggle.scrolled {
-  box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.4),
-    0 4px 12px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-
-/* Enhanced hover state for better scroll visibility */
+/* Enhanced hover state */
 .dark-mode-toggle:hover {
   transform: scale(1.05);
   box-shadow: 
@@ -513,12 +477,6 @@ td, th {
   outline-offset: 2px;
 }
 
-/* Smooth transitions for position changes */
-@media (min-width: 769px) {
-  .dark-mode-toggle {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), top 0.2s ease-out;
-  }
-}
 /* Toggle Animation */
 .dark-mode-toggle .toggle-icon {
   position: absolute;
