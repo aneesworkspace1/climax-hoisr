@@ -37,89 +37,73 @@ class EnhancedClimaxHosiery {
     toggle.setAttribute('aria-label', 'Toggle dark mode');
     toggle.title = 'Toggle dark mode';
     
-    // Add to body for fixed positioning
-    document.body.appendChild(toggle);
-    
-    // Setup scroll behavior for enhanced stickiness
-    this.setupStickyScrollBehavior(toggle);
+    // Add to appropriate location based on screen size
+    this.positionDarkModeToggle(toggle);
     
     return toggle;
   }
   
-  setupStickyScrollBehavior(toggle) {
-    let lastScrollY = window.scrollY;
-    let isScrolling = false;
-    let scrollTimeout;
-    
-    // Enhanced scroll handler for sticky behavior
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
-      
-      // Mark as scrolling
-      if (!isScrolling) {
-        isScrolling = true;
-        toggle.classList.add('scrolling');
-      }
-      
-      // Clear existing timeout
-      clearTimeout(scrollTimeout);
-      
-      // Enhanced positioning logic for desktop
-      if (window.innerWidth > 768) {
-        const header = document.querySelector('.header');
-        const headerHeight = header ? header.offsetHeight : 80;
-        
-        // Adjust position based on scroll and header
-        if (currentScrollY > 50) {
-          // When scrolled, position relative to viewport
-          toggle.style.top = '20px';
-          toggle.classList.add('scrolled');
-        } else {
-          // When at top, position below logo
-          toggle.style.top = `${headerHeight + 10}px`;
-          toggle.classList.remove('scrolled');
+  positionDarkModeToggle(toggle) {
+    if (window.innerWidth <= 768) {
+      // Mobile: Add to body for fixed positioning
+      document.body.appendChild(toggle);
+    } else {
+      // Desktop: Add to header navigation
+      const headerContent = document.querySelector('.header-content');
+      if (headerContent) {
+        // Create nav section wrapper if it doesn't exist
+        let navSection = headerContent.querySelector('.header-nav-section');
+        if (!navSection) {
+          navSection = document.createElement('div');
+          navSection.className = 'header-nav-section';
+          
+          // Move nav and mobile button to nav section
+          const nav = headerContent.querySelector('.nav');
+          const mobileBtn = headerContent.querySelector('.mobile-menu-btn');
+          
+          if (nav) navSection.appendChild(nav);
+          if (mobileBtn) navSection.appendChild(mobileBtn);
+          
+          headerContent.appendChild(navSection);
         }
+        
+        // Add toggle to nav section
+        navSection.appendChild(toggle);
+      } else {
+        // Fallback to body if header not found
+        document.body.appendChild(toggle);
       }
-      
-      // Reset scrolling state after scroll ends
-      scrollTimeout = setTimeout(() => {
-        isScrolling = false;
-        toggle.classList.remove('scrolling');
-      }, 150);
-      
-      lastScrollY = currentScrollY;
-    };
+    }
     
-    // Throttled scroll listener for performance
-    let ticking = false;
-    const throttledScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    
-    // Add scroll listener
-    window.addEventListener('scroll', throttledScroll, { passive: true });
-    
-    // Handle resize events
+    // Handle resize events to reposition toggle
     window.addEventListener('resize', () => {
-      // Recalculate position on resize
-      handleScroll();
+      this.repositionToggleOnResize(toggle);
     });
-    
-    // Initial position setup
-    handleScroll();
   }
   
-  // Enhanced toggle functionality with scroll awareness
+  repositionToggleOnResize(toggle) {
+    const currentWidth = window.innerWidth;
+    const isCurrentlyInHeader = toggle.parentElement?.classList.contains('header-nav-section');
+    const isCurrentlyInBody = toggle.parentElement === document.body;
+    
+    if (currentWidth <= 768 && isCurrentlyInHeader) {
+      // Move from header to body for mobile
+      toggle.remove();
+      document.body.appendChild(toggle);
+    } else if (currentWidth > 768 && isCurrentlyInBody) {
+      // Move from body to header for desktop
+      toggle.remove();
+      const headerContent = document.querySelector('.header-content');
+      let navSection = headerContent?.querySelector('.header-nav-section');
+      if (navSection) {
+        navSection.appendChild(toggle);
+      }
+    }
+  }
+  
+  // Enhanced toggle functionality
   setupDarkModeListeners() {
     this.darkModeToggle.addEventListener('click', (e) => {
-      // Prevent any scroll interference
       e.preventDefault();
       e.stopPropagation();
       
@@ -130,7 +114,7 @@ class EnhancedClimaxHosiery {
       this.toggleDarkMode();
     });
 
-    // Enhanced hover effects for better visibility during scroll
+    // Enhanced hover effects
     this.darkModeToggle.addEventListener('mouseenter', () => {
       this.darkModeToggle.style.transform = 'scale(1.05)';
     });
@@ -611,28 +595,45 @@ class EnhancedClimaxHosiery {
     const yarnContainer = document.querySelector('.yarn-animation');
     if (!yarnContainer) return;
 
+    // Clear any existing content
+    yarnContainer.innerHTML = '';
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 300 300');
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', '100%');
 
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', 'M150,50 Q250,100 150,150 Q50,200 150,250 Q250,200 150,150');
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke', 'var(--primary-red)');
-    path.setAttribute('stroke-width', '3');
-    path.setAttribute('opacity', '0.6');
-
-    const animateTag = document.createElementNS('http://www.w3.org/2000/svg', 'animateTransform');
-    animateTag.setAttribute('attributeName', 'transform');
-    animateTag.setAttribute('type', 'rotate');
-    animateTag.setAttribute('values', '0 150 150; 360 150 150');
-    animateTag.setAttribute('dur', '20s');
-    animateTag.setAttribute('repeatCount', 'indefinite');
-
-    path.appendChild(animateTag);
-    svg.appendChild(path);
+    // Create multiple yarn strands for better visual effect
+    const paths = [
+      'M150,50 Q250,100 150,150 Q50,200 150,250 Q250,200 150,150',
+      'M100,75 Q200,125 100,175 Q25,225 100,275 Q200,225 100,175',
+      'M200,75 Q275,125 200,175 Q125,225 200,275 Q275,225 200,175'
+    ];
+    
+    paths.forEach((pathData, index) => {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', pathData);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', '#D32F2F');
+      path.setAttribute('stroke-width', index === 0 ? '3' : '2');
+      path.setAttribute('opacity', index === 0 ? '0.6' : '0.4');
+      
+      const animateTag = document.createElementNS('http://www.w3.org/2000/svg', 'animateTransform');
+      animateTag.setAttribute('attributeName', 'transform');
+      animateTag.setAttribute('type', 'rotate');
+      animateTag.setAttribute('values', `0 150 150; ${360 + (index * 30)} 150 150`);
+      animateTag.setAttribute('dur', `${20 + (index * 2)}s`);
+      animateTag.setAttribute('repeatCount', 'indefinite');
+      
+      path.appendChild(animateTag);
+      svg.appendChild(path);
+    });
+    
     yarnContainer.appendChild(svg);
+    
+    // Ensure animation starts
+    setTimeout(() => {
+      yarnContainer.style.opacity = '0.6';
+    }, 100);
   }
 
   showPageTransition() {
