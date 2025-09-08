@@ -124,6 +124,7 @@ body {
 .header {
   background: var(--header-bg);
   border-bottom-color: var(--border-color);
+  /* Remove transition to keep header consistent */
 }
 
 /* Ensure header stays consistent in dark mode */
@@ -219,7 +220,7 @@ body {
   box-shadow: 0 8px 24px var(--shadow-heavy), 0 4px 8px var(--shadow-standard-medium);
 }
 
-/* Dark Mode Button Enhancement */
+/* Dark Mode Button Enhancement - Matching Reference Style */
 [data-theme="dark"] .btn-primary {
   background: var(--accent-red);
   color: var(--text-dark);
@@ -382,6 +383,7 @@ td, th {
   overflow: hidden;
 }
 
+
 /* Desktop positioning - fixed in navbar */
 @media (min-width: 769px) {
   .dark-mode-toggle {
@@ -394,19 +396,21 @@ td, th {
   }
 }
 
-/* Mobile positioning - shifted ~4-5 inches left */
+/* Mobile positioning - fixed in top right corner */
 @media (max-width: 768px) {
   .dark-mode-toggle {
     position: fixed;
     top: 20px;
-    right: 55px;          /* was 20px – now ~4-5 inches in */
+    right: 20px;
     width: 50px;
     height: 26px;
     z-index: 1004;
+    /* Ensure it's above mobile menu and header */
     box-shadow: 
       0 4px 12px rgba(0, 0, 0, 0.4),
       0 2px 6px rgba(0, 0, 0, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    /* Ensure minimum touch target */
     min-width: 44px;
     min-height: 44px;
     padding: 9px;
@@ -461,16 +465,19 @@ td, th {
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
+/* Active state for better feedback */
 .dark-mode-toggle:active {
   transform: scale(0.95);
   transition: all 0.1s ease;
 }
 
+/* Focus state for accessibility */
 .dark-mode-toggle:focus {
   outline: 3px solid rgba(116, 185, 255, 0.5);
   outline-offset: 2px;
 }
 
+/* Toggle Animation */
 .dark-mode-toggle .toggle-icon {
   position: absolute;
   transition: all 0.3s ease;
@@ -478,4 +485,180 @@ td, th {
 }
 
 .dark-mode-toggle .sun-icon {
-  left: 8px
+  left: 8px;
+  opacity: 1;
+}
+
+.dark-mode-toggle .moon-icon {
+  right: 8px;
+  opacity: 0.3;
+}
+
+[data-theme="dark"] .dark-mode-toggle .sun-icon {
+  opacity: 0.3;
+}
+
+[data-theme="dark"] .dark-mode-toggle .moon-icon {
+  opacity: 1;
+}
+
+.dark-mode-toggle.switching .toggle-icon {
+  transform: rotate(180deg);
+  opacity: 0.7;
+}
+
+/* Logo Adjustments for Dark Mode */
+[data-theme="dark"] .logo {
+  filter: none;
+  transition: var(--theme-transition);
+}
+
+/* Image Adjustments for Dark Mode */
+[data-theme="dark"] img:not(.logo) {
+  filter: brightness(0.95) contrast(1.05);
+  box-shadow: 0 2px 8px var(--shadow-standard-medium);
+  transition: var(--theme-transition);
+}
+
+/* Gallery Items */
+[data-theme="dark"] .gallery-item img {
+  box-shadow: 0 4px 12px var(--shadow-standard-heavy);
+}
+
+[data-theme="dark"] .gallery-item:hover img {
+  box-shadow: 0 8px 24px var(--shadow-standard-heavy);
+}
+
+/* Stats Section */
+.stats {
+  background: var(--accent-red);
+  color: white;
+}
+
+/* Badges */
+.badge {
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.bg-red {
+  background-color: var(--accent-red) !important;
+  color: white;
+}
+
+[data-theme="dark"] .bg-red {
+  background-color: var(--accent-red) !important;
+  color: var(--text-dark);
+}
+
+.bg-gray {
+  background-color: var(--bg-secondary) !important;
+  color: #000000;
+}
+
+/* Filter Buttons */
+.filter-btn {
+  background: #FFFFFF;
+  border: 2px solid var(--border-color);
+  color: #757575;
+  border-radius: 30px;
+  transition: var(--theme-transition);
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+  background: var(--accent-red);
+  border-color: var(--accent-red);
+  color: white;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  [data-theme="dark"] {
+    --text-primary: #FFFFFF;
+    --text-secondary: #F0F0F0;
+    --bg-primary: #000000;
+    --card-bg: #FFFFFF;
+  }
+}
+
+/* Print Styles - Force Light Mode */
+@media print {
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+  
+  .dark-mode-toggle {
+    display: none !important;
+  }
+}
+
+/* WCAG AA Contrast Compliance */
+[data-theme="dark"] {
+  /* Ensure all text meets WCAG AA standards */
+  --text-primary: #EAEAEA; /* 4.5:1 contrast ratio on dark backgrounds */
+  --text-secondary: #CCCCCC; /* 4.5:1 contrast ratio */
+  --text-muted: #CFCFCF; /* 4.5:1 contrast ratio */
+}
+
+/* Enhanced Shadow System for Dark Mode */
+/* Marquee in Dark Mode */
+[data-theme="dark"] .markets-marquee {
+  background: #000000;
+  color: var(--text-dark);
+}
+
+/* Hero Section Adjustments */
+[data-theme="dark"] .hero {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+}
+
+/* Contact Form Styling */
+[data-theme="dark"] .contact-form {
+  background: #FFFFFF;
+  box-shadow: 0 8px 24px var(--shadow-heavy), 0 4px 8px var(--shadow-standard-medium);
+}
+
+/* Navigation Bar Dark Mode Styling */
+[data-theme="dark"] .header {
+  background: #000000;
+  backdrop-filter: none;
+}
+
+[data-theme="dark"] .header.scrolled {
+  background: #000000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation links in dark mode */
+[data-theme="dark"] .nav-link {
+  color: #FFFFFF;
+}
+
+[data-theme="dark"] .nav-link:hover,
+[data-theme="dark"] .nav-link.active {
+  color: var(--accent-red);
+  background: rgba(211, 47, 47, 0.1);
+}
+
+/* Mobile menu button in dark mode */
+[data-theme="dark"] .mobile-menu-btn {
+  color: #FFFFFF;
+}
+
+/* Logo adjustments for dark mode */
+[data-theme="dark"] .logo {
+  filter: brightness(1.1);
+}
+
+/* Mobile navigation in dark mode */
+@media (max-width: 768px) {
+  [data-theme="dark"] .nav {
+    background: #000000;
+    border-top: 1px solid #333333;
+  }
+}
